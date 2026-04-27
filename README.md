@@ -115,10 +115,10 @@ python aux_1.py --data-dir data/raw
 
 ### 2. Train the final fixed model
 
-This retrains the final model using the selected parameters. It does **not** run the grid search.
+This retrains the final model using the selected parameters. It does **not** run the grid search. It does **not** run the overfitting test.
 
 ```bash
-python main.py train --data-dir data/raw --model-path models/mask_model.joblib --image-size 128 128 --bootstrap-samples 500
+python main.py train --data-dir data/raw --model-path models/mask_model.joblib --image-size 128 128 --skip-overfit-check --bootstrap-samples 100
 ```
 
 ### 3. Evaluate a saved model
@@ -164,6 +164,8 @@ folder/
 ├── data/
 │   └── readme_data.txt
 │
+├── models/
+│   └── mask_model.joblib
 ├── src/
 │   ├── config.py
 │   ├── data.py
@@ -182,7 +184,7 @@ folder/
 The Streamlit app expects the trained model file at:
 
 ```text
-mask_model.joblib
+models/mask_model.joblib
 ```
 
 If deploying on Streamlit Community Cloud, make sure `requirements.txt`, `app/streamlit_app.py`, and `models/mask_model.joblib` are included in the GitHub repository. If the model file is too large for GitHub, use Git LFS or retrain a smaller final model.
