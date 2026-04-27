@@ -187,4 +187,4 @@ The Streamlit app expects the trained model file at:
 models/mask_model.joblib
 ```
 
-If deploying on Streamlit Community Cloud, make sure `requirements.txt`, `app/streamlit_app.py`, and `models/mask_model.joblib` are included in the GitHub repository. If the model file is too large for GitHub, use Git LFS or retrain a smaller final model.
+If deploying on Streamlit Community Cloud, make sure `requirements.txt`, `app/streamlit_app.py`, and `models/mask_model.joblib` are included in the GitHub repository. 
