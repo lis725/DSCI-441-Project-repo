@@ -153,39 +153,28 @@ python main.py train --data-dir data/raw --model milestone_grid --model-path mod
 ## Repository structure
 
 ```text
-README.md
-ReadMe.txt
-requirements.txt
-main.py
-aux_1.py
-app/
-  streamlit_app.py
-data/
-  readme_data.txt
-  raw/
-models/
-  mask_model.joblib        # generated after training; may need to be copied here
-reports/
-  figures/
-scripts/
-  download_kaggle_dataset.py
-  resolution_experiment.py
-src/
-  config.py
-  data.py
-  evaluate.py
-  features.py
-  models.py
-  predict.py
-  train.py
-poster/
-  poster.tex
-  poster.pdf
-  figures/
-materials/
-  video_script.md
-  poster_fill_instructions.md
-  form_answers.md
+folder/
+│
+├── ReadMe.txt
+├── README.md
+├── requirements.txt
+├── main.py
+├── aux_1.py
+│
+├── data/
+│   └── readme_data.txt
+│
+├── src/
+│   ├── config.py
+│   ├── data.py
+│   ├── evaluate.py
+│   ├── features.py
+│   ├── models.py
+│   ├── predict.py
+│   └── train.py
+│
+└── app/
+    └── streamlit_app.py
 ```
 
 ## Notes for deployment
@@ -193,7 +182,7 @@ materials/
 The Streamlit app expects the trained model file at:
 
 ```text
-models/mask_model.joblib
+mask_model.joblib
 ```
 
 If deploying on Streamlit Community Cloud, make sure `requirements.txt`, `app/streamlit_app.py`, and `models/mask_model.joblib` are included in the GitHub repository. If the model file is too large for GitHub, use Git LFS or retrain a smaller final model.
