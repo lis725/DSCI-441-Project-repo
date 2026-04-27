@@ -30,6 +30,7 @@ data/raw/
 
 The code automatically searches for folders named like `WithMask`, `WithoutMask`, `with_mask`, `without_mask`, `mask`, and `no_mask`.
 
+```text
 The final data folder should look like this:
 data/raw/
 ├── Face Mask Dataset/
@@ -58,7 +59,7 @@ data/raw/
     └── Test/
         ├── WithMask/
         └── WithoutMask/
-  
+```
 ## Model summary
 
 The final model:
