@@ -1,0 +1,16 @@
+data/raw/
+.venv/
+venv/
+env/
+.cache/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+kaggle.json
+
+reports/
+poster/
+materials/
+notebooks/
+scripts/
