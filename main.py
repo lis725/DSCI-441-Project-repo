@@ -31,6 +31,11 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--max-eval-per-class", type=int, default=None)
     train.add_argument("--bootstrap-samples", type=int, default=500)
     train.add_argument("--n-jobs", type=int, default=1, help="Parallel jobs for optional milestone_grid tuning. Ignored by the fixed final model.")
+    train.add_argument(
+        "--skip-overfit-check",
+        action="store_true",
+        help="Skip train/validation overfitting diagnostics for faster retraining.",
+    )
 
     evaluate = subparsers.add_parser("evaluate", help="Evaluate a saved model on the held-out test set.")
     evaluate.add_argument("--data-dir", default=str(RAW_DATA_DIR))
@@ -55,6 +60,7 @@ def main() -> None:
             max_eval_per_class=args.max_eval_per_class,
             n_bootstraps=args.bootstrap_samples,
             n_jobs=args.n_jobs,
+            run_overfit_check=not args.skip_overfit_check,
         )
     elif args.command == "evaluate":
         evaluate_saved_model(

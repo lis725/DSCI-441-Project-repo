@@ -226,6 +226,7 @@ def train_model(
     output_dir: str | Path = REPORTS_DIR,
     random_state: int = RANDOM_STATE,
     n_jobs: int = 1,
+    run_overfit_check: bool = True,
 ) -> Dict:
     """Train the final model, evaluate it, save diagnostics, and save an artifact."""
     data_dir = Path(data_dir)
@@ -267,18 +268,29 @@ def train_model(
     model = build_model(model_name=model_name, random_state=random_state, n_jobs=n_jobs)
     model.fit(X_train, y_train)
 
-    print("\nPredicting training split for overfitting diagnostics...")
-    y_train_pred = model.predict(X_train)
-    split_metrics: Dict[str, Dict[str, float]] = {
-        "train": compute_metrics(y_train, y_train_pred, positive_label=POSITIVE_LABEL),
-    }
+    split_metrics: Dict[str, Dict[str, float]] = {}
 
-    if len(validation) > 0:
-        print(f"\nExtracting validation HOG features from {len(validation)} images...")
-        X_validation = extract_feature_matrix(validation["path"].tolist(), image_size=image_size)
-        y_validation = validation["label"].to_numpy()
-        y_validation_pred = model.predict(X_validation)
-        split_metrics["validation"] = compute_metrics(y_validation, y_validation_pred, positive_label=POSITIVE_LABEL)
+    if run_overfit_check:
+        print("\nPredicting training split for overfitting diagnostics...")
+        y_train_pred = model.predict(X_train)
+        split_metrics["train"] = compute_metrics(
+            y_train,
+            y_train_pred,
+            positive_label=POSITIVE_LABEL,
+        )
+
+        if len(validation) > 0:
+            print(f"\nExtracting validation HOG features from {len(validation)} images...")
+            X_validation = extract_feature_matrix(validation["path"].tolist(), image_size=image_size)
+            y_validation = validation["label"].to_numpy()
+            y_validation_pred = model.predict(X_validation)
+            split_metrics["validation"] = compute_metrics(
+                y_validation,
+                y_validation_pred,
+                positive_label=POSITIVE_LABEL,
+            )
+    else:
+        print("\nSkipping train/validation overfitting diagnostics.")
 
     print(f"\nExtracting test HOG features from {len(test)} images...")
     X_test = extract_feature_matrix(test["path"].tolist(), image_size=image_size)
@@ -296,13 +308,20 @@ def train_model(
     )
     print_report(report)
 
-    generalization_report = _save_generalization_report(
-        model=model,
-        model_name=model_name,
-        split_metrics=split_metrics,
-        output_dir=output_dir,
-    )
-    _print_generalization_report(generalization_report)
+    if run_overfit_check:
+        generalization_report = _save_generalization_report(
+            model=model,
+            model_name=model_name,
+            split_metrics=split_metrics,
+            output_dir=output_dir,
+        )
+        _print_generalization_report(generalization_report)
+    else:
+        generalization_report = {
+            "skipped": True,
+            "reason": "Train/validation overfitting diagnostics were skipped for faster retraining.",
+            "test_metrics": split_metrics.get("test", {}),
+        }
 
     artifact = {
         "model": model,
